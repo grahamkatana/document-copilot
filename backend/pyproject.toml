@@ -8,6 +8,7 @@ version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = [
     "alembic>=1.18.4",
+    "docling>=2.97.0",
     "fastapi>=0.136.3",
     "httpx>=0.28.1",
     "openai>=2.41.0",
