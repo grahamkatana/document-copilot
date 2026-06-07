@@ -1,0 +1,11 @@
+# bunfig.toml
+# Frontend package manager config — bun only.
+#
+# Block packages younger than 7 days. Defends against the typosquat /
+# compromised-release window where a newly published version of a popular
+# package turns out to be malicious or yanked.
+# If a fresh package is genuinely required, override per-install with
+# an explicit justification in the commit.
+
+[install]
+minimum-release-age = "7d"
