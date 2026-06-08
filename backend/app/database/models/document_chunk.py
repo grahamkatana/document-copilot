@@ -5,9 +5,20 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
 from pgvector.sqlalchemy import Vector
-from sqlalchemy import DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint, func
+from sqlalchemy import (
+    Computed,
+    DateTime,
+    ForeignKey,
+    Index,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+    func,
+)
+from sqlalchemy.dialects.postgresql import JSONB, TSVECTOR, UUID
 from sqlalchemy import text as sql_text
-from sqlalchemy.dialects.postgresql import JSONB, UUID
+
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.base import Base
@@ -27,7 +38,9 @@ class DocumentChunk(Base):
 
     __tablename__ = "document_chunks"
     __table_args__ = (
-        UniqueConstraint("document_id", "chunk_index", name="uq_document_chunks_document_chunk"),
+        UniqueConstraint(
+            "document_id", "chunk_index", name="uq_document_chunks_document_chunk"
+        ),
         Index("ix_document_chunks_document_id", "document_id"),
     )
 
@@ -48,6 +61,11 @@ class DocumentChunk(Base):
         nullable=True,
     )
     token_count: Mapped[int | None] = mapped_column(Integer)
+    search_vector: Mapped[Any] = mapped_column(
+        TSVECTOR,
+        Computed("to_tsvector('english', text)", persisted=True),
+        nullable=True
+    )
     chunk_metadata: Mapped[dict[str, Any]] = mapped_column(
         JSONB,
         nullable=False,
